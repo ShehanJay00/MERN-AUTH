@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 
 import connectDB from './config/mongobd.js'
 import authRouter from './routes/authRoute.js'
+import userRouter from './routes/userRoute.js'
 
 
 const app = express()
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
     res.send('API Working, Hello World.....!')
 })
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 
 
 app.listen(port, () => {
