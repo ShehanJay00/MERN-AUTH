@@ -7,7 +7,7 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 
 const App = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div >
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
