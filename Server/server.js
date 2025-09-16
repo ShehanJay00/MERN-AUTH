@@ -9,7 +9,7 @@ import authRouter from './routes/authRoute.js'
 
 
 const app = express()
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4001
 
 connectDB();
 
