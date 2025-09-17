@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from 'react-router-dom';
-import { AppContext } from "../context/AppContext";
+import { AppContext } from "../context/AppContext.jsx";
 import axios from "axios";
 import {toast} from 'react-toastify';
 import { useContext } from "react";
@@ -22,11 +22,13 @@ import { useContext } from "react";
 
             try{
                 e.preventDefault();
-
                 axios.defaults.withCredentials = true;
 
                 if(state === 'Sign up'){
-                    const {data} = await axios.post(backendURL + '/api/auth/register', {name,email,password});
+                    const {data} = await axios.post(`${backendURL}/api/auth/register`, 
+                        { name, email, password },
+                        { withCredentials: true }
+                    );
                     
                     if(data.success){
                         setIsLoggedIn(true)
@@ -38,7 +40,10 @@ import { useContext } from "react";
                     }
                 }
                 else{
-                    const {data} = await axios.post(backendURL + '/api/auth/login', {email,password});
+                    const {data} = await axios.post(`${backendURL}/api/auth/login`, 
+                        { email, password },
+                        { withCredentials: true }
+                    );
                     if(data.success){
                         setIsLoggedIn(true)
                         getUserData()

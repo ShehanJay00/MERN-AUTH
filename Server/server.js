@@ -14,9 +14,11 @@ const port = process.env.PORT || 4001
 
 connectDB();
 
+const allowedOrigins = [process.env.CLIENT_URL];
+
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({credentials: true}))
+app.use(cors({origin: allowedOrigins, credentials: true}))
 
 
 // API ENDPOINTS

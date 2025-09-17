@@ -1,10 +1,11 @@
 import userModel from "../models/userModel.js";
 
 export const getUserData = async (req, res) => {
-    const { userId } = req.body;
 
     try {
-        const user = await userModel.findById(userId).select('-password -verifyotp -verifyotpExpireAt');
+        const userId = req.userId;
+
+        const user = await userModel.findById(userId);
 
         if (!user) {
             return res.json({ success: false, message: "User not found" });

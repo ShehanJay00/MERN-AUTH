@@ -5,12 +5,13 @@ import { AppContext } from '../context/AppContext.jsx';
     const Header = () => {
 
         const {userData} = useContext(AppContext);
+
     return (
         <div className='flex flex-col items-center justify-center mt-20 px-4 text-center text-gray-800'>
 
             <img src={assets.header_img} alt="Header Img" className="w-36 h-36 rounded-full mb-6"/>
             <h1 className='flex items-center gap-2 text-xl sm:text-3xl font-medium mb-2'>
-                Hey {userData ? userData.name : 'Developer'}
+                Hey {userData ? userData.name : 'Developer'}!
                 <img className='w-8 aspect-square' src={assets.hand_wave} alt="Hand Wave" />
             </h1>
         
