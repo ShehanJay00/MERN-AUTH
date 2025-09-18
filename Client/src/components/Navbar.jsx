@@ -13,7 +13,7 @@
         const sendVerificationOtp = async () => {
             try {
                 axios.defaults.withCredentials = true;
-                const {data} = await axios.post(`${backendURL}/api/auth/send-verify-otp`, {}, { withCredentials: true });
+                const {data} = await axios.post(`${backendURL}/api/auth/send-verify-otp`);
             
                 if(data.success){
                     navigate('/email-verify');

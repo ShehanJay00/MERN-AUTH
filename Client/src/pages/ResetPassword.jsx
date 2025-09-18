@@ -7,27 +7,30 @@ import { toast } from "react-toastify";
 
     const ResetPassword = () => {
 
-        const navigate = useNavigate();
+    const navigate = useNavigate();
 
-        const { backendURL } = React.useContext(AppContext);
-        axios.defaults.withCredentials = true;
+    const { backendURL } = React.useContext(AppContext);
+    axios.defaults.withCredentials = true;
 
-        const [email, setEmail] = React.useState('');
-        const [newPassword, setNewPassword] = React.useState('');
-        const [isEmailSent, setIsEmailSent] = React.useState('');
-        const [otp, setOtp] = React.useState(0);
-        const [isOtpSubmited, setIsOtpSubmited] = React.useState(false);
+    const [email, setEmail] = React.useState('');
+    const [newPassword, setNewPassword] = React.useState('');
+    const [isEmailSent, setIsEmailSent] = React.useState(false);
+    const [otp, setOtp] = React.useState(0);
+    const [isOtpSubmited, setIsOtpSubmited] = React.useState(false);
+
+    const inputRefs = React.useRef([]);
+
+    React.useEffect(() => {
+        inputRefs.current = inputRefs.current.slice(0, 6);
+    }, []);
         
-
-        const inputRefs = React.useRef([]);
-        
-                const handleInput = (e, index) => {
+    const handleInput = (e, index) => {
                     if(e.target.value.length > 0 && index < inputRefs.current.length - 1){
                         inputRefs.current[index + 1].focus();
                     }
                 };
         
-                const handleKeyDown = (e, index) => {
+    const handleKeyDown = (e, index) => {
                     if(e.key === 'Backspace' && index > 0 && e.target.value === ''){
                         inputRefs.current[index - 1].focus();
                     }
@@ -42,11 +45,11 @@ import { toast } from "react-toastify";
                     });
                 }
 
-        const onSubmitEmail = async (e) => {
+    const onSubmitEmail = async (e) => {
 
             e.preventDefault();
             try {
-                const {data} = await axios.post(`${backendURL}/auth/send-reset-otp`, { email });
+                const {data} = await axios.post(`${backendURL}/api/auth/send-reset-otp`, { email });
                 data.success ? toast.success(data.message) : toast.error(data.message);
                 data.success && setIsEmailSent(true);
 
@@ -55,7 +58,7 @@ import { toast } from "react-toastify";
             }
         }
 
-        const onSubmitOtp = async (e) => {
+    const onSubmitOtp = async (e) => {
             e.preventDefault();
             try {
                 const otpArray = inputRefs.current.map(e => e.value);
@@ -67,10 +70,10 @@ import { toast } from "react-toastify";
             }
         }
 
-        const onSubmitNewPassword = async (e) => {
+    const onSubmitNewPassword = async (e) => {
             e.preventDefault();
             try {
-                const {data} = await axios.post(`${backendURL}/auth/reset-password`, { email, otp, newPassword });
+                const {data} = await axios.post(`${backendURL}/api/auth/reset-password`, { email, otp, newPassword });
                 data.success ? toast.success(data.message) : toast.error(data.message);
                 data.success && navigate('/login');
 
@@ -79,7 +82,7 @@ import { toast } from "react-toastify";
             }
         }
 
-        
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
             <img 
@@ -156,3 +159,4 @@ import { toast } from "react-toastify";
     };
 
 export default ResetPassword;
+
