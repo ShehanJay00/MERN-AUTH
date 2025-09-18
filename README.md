@@ -1,4 +1,4 @@
-<img width="1440" height="900" alt="Screenshot 2025-09-18 at 13 19 34" src="https://github.com/user-attachments/assets/385b5edb-35b6-4aa3-bae8-2239a8db696c" />
+<img width="1440" height="821" alt="Screenshot 2025-09-18 at 13 19 34" src="https://github.com/user-attachments/assets/9585f9e2-762b-4039-a748-e9ce161fbef9" />
 
 # MERN Authentication System
 
