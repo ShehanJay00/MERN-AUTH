@@ -1,3 +1,5 @@
+<img width="1440" height="900" alt="Screenshot 2025-09-18 at 13 19 34" src="https://github.com/user-attachments/assets/385b5edb-35b6-4aa3-bae8-2239a8db696c" />
+
 # MERN Authentication System
 
 A complete **Authentication System** built with the **MERN stack** (MongoDB, Express, React, Node.js).  
