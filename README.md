@@ -42,7 +42,6 @@ It provides a **secure and production-ready auth flow**, including **JWT authent
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/your-username/mern-auth-system.git
-cd mern-auth-system
+git clone https://github.com/ShehanJay00/MERN-AUTH.git
 
 
