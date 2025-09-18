@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken';
 import userModel from '../models/userModel.js';
 import transporter from '../config/nodeMailer.js';
+import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../config/emailTemplates.js';
 
 
 
@@ -112,7 +113,7 @@ export const logout = async (req, res) => {
 
 export const sendVerifyOtp = async (req, res) => {
     try{
-        const{userId} = req.body;
+        const userId = req.userId;
         const user = await userModel.findById(userId);
 
         if(user.isAccountVerified){
@@ -130,7 +131,8 @@ export const sendVerifyOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Account Verification OTP',
-            text: `Hello ${user.name},\n\nYour OTP for account verification is ${otp}. It is valid for 10 minutes.\n\nBest regards,\nThe Team`
+            //text: `Hello ${user.name},\n\nYour OTP for account verification is ${otp}. It is valid for 10 minutes.\n\nBest regards,\nThe Team`,
+            html: EMAIL_VERIFY_TEMPLATE.replace('{{otp}}', otp).replace('{{email}}', user.email)
         };
 
         await transporter.sendMail(mailoptions);
@@ -147,20 +149,21 @@ export const sendVerifyOtp = async (req, res) => {
 
 
 export const verifyEmail = async (req, res) => {
-    const { userId, otp } = req.body;
-
-    if (!userId || !otp) {
-        return res.json({ success: false, message: "All fields are required" });
-    }
-
     try {
+        const userId = req.userId; // comes from JWT middleware
+        const { otp } = req.body;  // only OTP is expected from frontend
+
+        if (!otp) {
+            return res.json({ success: false, message: "OTP is required" });
+        }
+
         const user = await userModel.findById(userId);
 
         if (!user) {
             return res.json({ success: false, message: "User not found" });
         }
-
-        if (user.verifyotp !== otp || !user.verifyotp === '') {
+        
+        if (user.verifyotp !== otp || user.verifyotp === '') {
             return res.json({ success: false, message: "Invalid OTP" });
         }
 
@@ -180,6 +183,7 @@ export const verifyEmail = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
+
 
 
 
@@ -215,8 +219,8 @@ export const sendResetOtp = async (req, res) => {
 
         const otp = String(Math.floor(100000 + Math.random() * 900000));
 
-        user.resetotp = otp;
-        user.resetotpExpireAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+        user.resetOtp = otp;
+        user.resetOtpExpireAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
         await user.save();
 
@@ -224,7 +228,8 @@ export const sendResetOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Password Reset OTP',
-            text: `Hello ${user.name},\n\nYour OTP for password reset is ${otp}. It is valid for 10 minutes.\n\nBest regards,\nThe Team`
+            //text: `Hello ${user.name},\n\nYour OTP for password reset is ${otp}. It is valid for 10 minutes.\n\nBest regards,\nThe Team`
+            html: PASSWORD_RESET_TEMPLATE.replace('{{otp}}', otp).replace('{{email}}', user.email)
         };
 
         await transporter.sendMail(mailoptions);
@@ -253,18 +258,21 @@ export const resetPassword = async (req, res) => {
             return res.json({ success: false, message: "User not found" });
         }
 
-        if (user.resetotp !== otp || !user.resetotp === '') {
+        //Debugging log
+        //console.log("DB OTP:", user.resetOtp, "Frontend OTP:", otp);
+
+        if (!user.resetOtp || user.resetOtp !== otp) {
             return res.json({ success: false, message: "Invalid OTP" });
         }
 
-        if (user.resetotpExpireAt < Date.now()) {
+        if (user.resetOtpExpireAt < Date.now()) {
             return res.json({ success: false, message: "OTP has expired" });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         user.password = hashedPassword;
-        user.resetotp = '';
-        user.resetotpExpireAt = 0;
+        user.resetOtp = '';
+        user.resetOtpExpireAt = 0;
 
         await user.save();
 
